@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - I.E.P. Cristina Beatriz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }
+        .navbar { background-color: #1a2b5e; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar-brand { display: flex; align-items: center; gap: 10px; }
+        .navbar-brand img { width: 40px; height: 40px; }
+        .navbar-brand div { color: white; }
+        .navbar-brand div span { font-weight: bold; font-size: 15px; display: block; }
+        .navbar-brand div small { font-size: 12px; opacity: 0.8; }
+        .navbar-links { display: flex; gap: 20px; }
+        .navbar-links a { color: white; text-decoration: none; font-size: 14px; }
+        .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; gap: 60px; }
+        .main-image img { width: 420px; border-radius: 15px; object-fit: cover; }
+        .login-box { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 15px rgba(0,0,0,0.1); width: 420px; }
+        .login-box h2 { color: #c0392b; font-size: 26px; margin-bottom: 5px; }
+        .login-box p { color: #1a2b5e; font-size: 13px; margin-bottom: 25px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; color: #333; font-size: 14px; }
+        input, select { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 25px; font-size: 14px; outline: none; }
+        input:focus, select:focus { border-color: #1a2b5e; }
+        .form-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 13px; }
+        .form-row a { color: #1a2b5e; text-decoration: none; }
+        .form-row label { display: flex; align-items: center; gap: 6px; margin: 0; }
+        .form-row input[type="checkbox"] { width: auto; }
+        button { width: 100%; padding: 13px; background-color: #c0392b; color: white; border: none; border-radius: 25px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #a93226; }
+        .error { background-color: #fde8e8; color: #c0392b; padding: 10px 15px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; }
+        .login-note { font-size: 11px; color: #888; margin-top: 15px; text-align: center; }
+        .login-note a { color: #1a2b5e; }
+        footer { background-color: #1a2b5e; color: white; padding: 25px 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        footer h4 { font-size: 14px; margin-bottom: 8px; }
+        footer p, footer a { font-size: 12px; color: rgba(255,255,255,0.8); text-decoration: none; display: block; line-height: 1.8; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <div>
+                <span>Portal de Asistencia - Personal</span>
+            </div>
+        </div>
+        <div class="navbar-links">
+            <a href="#">Ayuda</a>
+            <a href="#">Español</a>
+        </div>
+    </nav>
+
+    <div class="main">
+        <div class="main-image">
+            <img src="https://images.unsplash.com/photo-1588072432836-e10032774350?w=500" alt="Estudiantes"/>
+        </div>
+        <div class="login-box">
+            <h2>Iniciar Sesión</h2>
+            <p>Portal de Asistencia - Personal institucional</p>
+            <div th:if="${param.error}" class="error">
+                Usuario o contraseña incorrectos.
+            </div>
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label>Usuario</label>
+                    <input type="text" name="username" placeholder="Ingrese su usuario institucional"/>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña</label>
+                    <input type="password" name="password" placeholder="Ingrese su contraseña"/>
+                </div>
+                <div class="form-row">
+                    <label><input type="checkbox"/> Recordarme en este equipo</label>
+                    <a href="#">¿Olvidó su contraseña?</a>
+                </div>
+                <button type="submit">Iniciar sesión</button>
+                <p class="login-note">Al iniciar sesión acepta las políticas de uso del sistema. Si tiene problemas, contacte a soporte técnico: <a href="#">soporte@cristinabeatriz.edu.pe</a></p>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div>
+            <h4>I.E.P. Cristina Beatriz</h4>
+            <p>Colegio privado - Educación primaria</p>
+        </div>
+        <div>
+            <h4>Contacto</h4>
+            <p>Teléfono: (01) 234-5678</p>
+            <p>Email: secretaria@cristinabeatriz.edu.pe</p>
+            <p>Dirección: Av. Los Maestros 123, Lima</p>
+        </div>
+        <div style="text-align:right">
+            <h4>Atención</h4>
+            <p>Lun-Vie: 08:00 - 17:00</p>
+            <a href="#">Ayuda | Política de privacidad</a>
+        </div>
+    </footer>
+</body>
+</html>
