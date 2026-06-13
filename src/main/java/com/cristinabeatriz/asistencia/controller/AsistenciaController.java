@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -60,27 +61,30 @@ public class AsistenciaController {
 
     @PostMapping("/guardar")
     public String guardarAsistencia(
-            @RequestParam Long idAula,
-            @RequestParam List<Long> idAlumnos,
-            @RequestParam List<String> estados,
-            Authentication auth) {
+        @RequestParam Long idAula,
+        @RequestParam List<Long> idAlumnos,
+        @RequestParam Map<String, String> params,
+        Authentication auth) {
 
-        Optional<Usuario> usuario = usuarioService.findByUsername(auth.getName());
-        Optional<Aula> aula = aulaService.buscarPorId(idAula);
+    Optional<Usuario> usuario = usuarioService.findByUsername(auth.getName());
+    Optional<Aula> aula = aulaService.buscarPorId(idAula);
 
-        if (usuario.isEmpty() || aula.isEmpty()) return "redirect:/asistencia";
+    if (usuario.isEmpty() || aula.isEmpty()) return "redirect:/asistencia";
 
-        for (int i = 0; i < idAlumnos.size(); i++) {
-            Alumno alumno = new Alumno();
-            alumno.setIdAlumno(idAlumnos.get(i));
+    for (Long idAlumno : idAlumnos) {
+        String estadoKey = "estado_" + idAlumno;
+        String estadoValor = params.getOrDefault(estadoKey, "PRESENTE");
 
-            Asistencia asistencia = new Asistencia();
-            asistencia.setAlumno(alumno);
-            asistencia.setAula(aula.get());
-            asistencia.setRegistradoPor(usuario.get());
-            asistencia.setEstado(Asistencia.EstadoAsistencia.valueOf(estados.get(i)));
-            asistenciaService.guardar(asistencia);
-        }
-        return "redirect:/asistencia";
+        Alumno alumno = new Alumno();
+        alumno.setIdAlumno(idAlumno);
+
+        Asistencia asistencia = new Asistencia();
+        asistencia.setAlumno(alumno);
+        asistencia.setAula(aula.get());
+        asistencia.setRegistradoPor(usuario.get());
+        asistencia.setEstado(Asistencia.EstadoAsistencia.valueOf(estadoValor));
+        asistenciaService.guardar(asistencia);
+    }
+    return "redirect:/asistencia";
     }
 }
