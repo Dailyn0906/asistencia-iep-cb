@@ -15,7 +15,21 @@ public class AsistenciaService {
     private AsistenciaRepository asistenciaRepository;
 
     public Asistencia guardar(Asistencia asistencia) {
-        asistencia.setFecha(LocalDate.now());
+        LocalDate hoy = LocalDate.now();
+
+        // RF-02: si el alumno ya tiene un registro hoy, se actualiza en vez de duplicar
+        Asistencia existente = asistenciaRepository
+                .findByAlumnoIdAlumnoAndFecha(asistencia.getAlumno().getIdAlumno(), hoy)
+                .orElse(null);
+
+        if (existente != null) {
+            existente.setEstado(asistencia.getEstado());
+            existente.setRegistradoPor(asistencia.getRegistradoPor());
+            existente.setHoraRegistro(LocalTime.now());
+            return asistenciaRepository.save(existente);
+        }
+
+        asistencia.setFecha(hoy);
         asistencia.setHoraRegistro(LocalTime.now());
         return asistenciaRepository.save(asistencia);
     }

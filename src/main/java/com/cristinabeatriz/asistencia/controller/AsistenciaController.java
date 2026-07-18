@@ -8,6 +8,7 @@ import com.cristinabeatriz.asistencia.service.AlumnoService;
 import com.cristinabeatriz.asistencia.service.AsistenciaService;
 import com.cristinabeatriz.asistencia.service.AulaService;
 import com.cristinabeatriz.asistencia.service.UsuarioService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -73,7 +74,13 @@ public class AsistenciaController {
 
     for (Long idAlumno : idAlumnos) {
         String estadoKey = "estado_" + idAlumno;
-        String estadoValor = params.getOrDefault(estadoKey, "PRESENTE");
+        String estadoValor = params.get(estadoKey);
+
+        // Commons Lang3: si el valor viene vacío, en blanco o con espacios, se usa PRESENTE por defecto
+        if (StringUtils.isBlank(estadoValor)) {
+            estadoValor = "PRESENTE";
+        }
+        estadoValor = StringUtils.trim(estadoValor).toUpperCase();
 
         Alumno alumno = new Alumno();
         alumno.setIdAlumno(idAlumno);

@@ -2,6 +2,7 @@ package com.cristinabeatriz.asistencia.service;
 
 import com.cristinabeatriz.asistencia.model.Asistencia;
 import com.cristinabeatriz.asistencia.repository.AsistenciaRepository;
+import com.google.common.base.Stopwatch;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ReporteService {
@@ -23,6 +25,8 @@ public class ReporteService {
     private AsistenciaRepository asistenciaRepository;
 
     public byte[] generarReporteExcel(Long idAula, LocalDate fecha) throws IOException {
+        // Guava Stopwatch: mide el tiempo de generacion para el monitoreo de rendimiento
+        Stopwatch cronometro = Stopwatch.createStarted();
         logger.info("Generando reporte Excel para aula {} en fecha {}", idAula, fecha);
 
         List<Asistencia> asistencias = asistenciaRepository
@@ -71,7 +75,9 @@ public class ReporteService {
             sheet.autoSizeColumn(i);
         }
 
-        logger.info("Reporte Excel generado con {} registros", asistencias.size());
+        cronometro.stop();
+        logger.info("Reporte Excel generado con {} registros en {} ms",
+                asistencias.size(), cronometro.elapsed(TimeUnit.MILLISECONDS));
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         workbook.write(out);
