@@ -23,4 +23,8 @@ public class AlumnoService {
     public java.util.Optional<Alumno> buscarPorId(Long id) {
         return alumnoRepository.findById(id);
     }
+
+    public List<Alumno> buscarPorNombre(String query) {
+        return alumnoRepository.findByNombresContainingIgnoreCaseOrApellidosContainingIgnoreCase(query, query);
+    }
 }

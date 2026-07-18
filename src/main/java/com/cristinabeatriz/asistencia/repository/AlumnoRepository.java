@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface AlumnoRepository extends JpaRepository<Alumno, Long> {
     List<Alumno> findByAulaIdAula(Long idAula);
+    List<Alumno> findByNombresContainingIgnoreCaseOrApellidosContainingIgnoreCase(String nombres, String apellidos);
 }

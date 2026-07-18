@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial - I.E.P. Cristina Beatriz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; display: flex; flex-direction: column; min-height: 100vh; }
+        .navbar { background-color: #1a2b5e; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar-brand div span { color: white; font-weight: bold; font-size: 15px; display: block; }
+        .navbar-brand div small { color: white; font-size: 12px; opacity: 0.8; }
+        .navbar-links a { color: white; text-decoration: none; font-size: 14px; margin-right: 20px; }
+        .btn-logout { background: white; color: #1a2b5e; border: none; padding: 8px 18px; border-radius: 20px; font-size: 13px; cursor: pointer; font-weight: bold; }
+        .content { flex: 1; padding: 30px 40px; }
+        .header-alumno { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        h1 { color: #1a2b5e; font-size: 22px; }
+        .subtitulo { color: #888; font-size: 13px; }
+        .btn-volver { color: #1a2b5e; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 18px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); }
+        .stat-card h3 { font-size: 13px; color: #666; margin-bottom: 5px; }
+        .stat-card .number { font-size: 28px; font-weight: bold; }
+        .number.green { color: #2e7d32; }
+        .number.red { color: #c0392b; }
+        .number.orange { color: #e67e22; }
+        .card { background: white; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); padding: 25px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 10px; font-size: 12px; color: #666; border-bottom: 2px solid #eee; }
+        td { padding: 12px 10px; font-size: 14px; border-bottom: 1px solid #f0f0f0; }
+        .badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+        .badge-presente { background: #e8f5e9; color: #2e7d32; }
+        .badge-falta { background: #fde8e8; color: #c0392b; }
+        .badge-tardanza { background: #fef3e2; color: #e67e22; }
+        .sin-registros { color: #888; text-align: center; padding: 20px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <div>
+                <span>I.E.P. Cristina Beatriz</span>
+                <small>Historial de Asistencia</small>
+            </div>
+        </div>
+        <div class="navbar-links">
+            <a href="/dashboard">Dashboard</a>
+        </div>
+        <form th:action="@{/logout}" method="post">
+            <button class="btn-logout" type="submit">Cerrar sesión</button>
+        </form>
+    </nav>
+
+    <div class="content">
+        <div class="header-alumno">
+            <div>
+                <h1 th:text="${alumno.nombreCompleto}">Nombre del alumno</h1>
+                <p class="subtitulo" th:text="'DNI: ' + ${alumno.dni} + ' — ' + ${alumno.grado} + ' ' + ${alumno.seccion}">Datos</p>
+            </div>
+            <a class="btn-volver" th:href="@{/historial}">&larr; Volver a la búsqueda</a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total presentes</h3>
+                <div class="number green" th:text="${totalPresentes}">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total faltas</h3>
+                <div class="number red" th:text="${totalFaltas}">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total tardanzas</h3>
+                <div class="number orange" th:text="${totalTardanzas}">0</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <table th:if="${asistencias != null and !#lists.isEmpty(asistencias)}">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Hora de registro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="a : ${asistencias}">
+                        <td th:text="${a.fecha}">Fecha</td>
+                        <td>
+                            <span th:if="${a.estado.name() == 'PRESENTE'}" class="badge badge-presente">Presente</span>
+                            <span th:if="${a.estado.name() == 'FALTA'}" class="badge badge-falta">Falta</span>
+                            <span th:if="${a.estado.name() == 'TARDANZA'}" class="badge badge-tardanza">Tardanza</span>
+                        </td>
+                        <td th:text="${a.horaRegistro}">Hora</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="sin-registros" th:if="${asistencias == null or #lists.isEmpty(asistencias)}">
+                Este alumno aún no tiene registros de asistencia.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

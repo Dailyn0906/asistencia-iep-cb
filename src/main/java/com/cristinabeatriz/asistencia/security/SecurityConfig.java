@@ -42,6 +42,10 @@ public class SecurityConfig {
                 .requestMatchers("/asistencia/**").hasRole("DOCENTE")
                 // RF-04/RF-09/CU-05: reportes para auxiliar, secretaría y dirección
                 .requestMatchers("/reportes/**").hasAnyRole("AUXILIAR", "SECRETARIA", "DIRECCION", "ADMINISTRADOR")
+                // RF-03/CU-04: panel en tiempo real para auxiliar y dirección
+                .requestMatchers("/panel/**").hasAnyRole("AUXILIAR", "DIRECCION", "ADMINISTRADOR")
+                // RF-09/CU-06: historial de asistencia por alumno
+                .requestMatchers("/historial/**").hasAnyRole("AUXILIAR", "DIRECCION", "ADMINISTRADOR")
                 // RF-07/RF-08/CU-08: gestión de usuarios solo para el administrador
                 .requestMatchers("/usuarios/**").hasRole("ADMINISTRADOR")
                 // Monitoreo del sistema: solo administrador
