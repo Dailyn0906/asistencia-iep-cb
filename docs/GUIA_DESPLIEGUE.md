@@ -56,3 +56,28 @@ estructura de la base de datos.
 El proyecto usa el servidor Tomcat embebido de Spring Boot (no requiere
 instalar un Tomcat externo). Para exponerlo a internet de forma segura se
 recomienda colocarlo detrás de un proxy inverso (Nginx/Apache) con HTTPS.
+
+## 7. Evidencia de despliegue realizado
+
+Para la sustentación del proyecto, la aplicación se desplegó y se expuso
+públicamente usando **ngrok** (túnel seguro hacia el servidor local), lo que
+permite acceder a la aplicación —corriendo con Java, Maven y MySQL— desde
+cualquier dispositivo con conexión a internet, sin necesidad de contratar un
+servicio de hosting de pago.
+
+**Procedimiento realizado:**
+1. Se empaquetó y ejecutó la aplicación localmente: `mvn spring-boot:run`
+2. Se expuso el puerto 8080 con ngrok: `ngrok http 8080`
+3. ngrok generó una URL pública HTTPS (ej. `https://divisive-feeble-urgency.ngrok-free.dev`)
+   que redirige todo el tráfico hacia la aplicación Spring Boot corriendo
+   localmente, incluyendo la conexión a la base de datos MySQL real.
+4. Se verificó el acceso exitoso desde un dispositivo externo (fuera de la
+   red local), confirmando que el despliegue es funcional de extremo a
+   extremo: login, registro de asistencia, panel en tiempo real, reportes
+   Excel, historial y gestión de usuarios.
+
+**Nota:** esta es una solución de despliegue temporal apta para demostración
+y pruebas colaborativas (el túnel requiere que el servidor local esté
+encendido). Para un despliegue productivo permanente, se seguirían los pasos
+de la sección 2-6 de esta guía en un servidor dedicado o servicio de
+hosting en la nube.
