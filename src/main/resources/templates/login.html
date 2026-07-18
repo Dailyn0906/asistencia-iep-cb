@@ -60,6 +60,9 @@
             <div th:if="${param.error}" class="error">
                 Usuario o contraseña incorrectos.
             </div>
+            <div th:if="${param.rolIncorrecto}" class="error">
+                El rol seleccionado no coincide con tu cuenta. Verifica e intenta de nuevo.
+            </div>
             <form th:action="@{/login}" method="post">
                 <div class="form-group">
                     <label>Usuario</label>
@@ -68,6 +71,17 @@
                 <div class="form-group">
                     <label>Contraseña</label>
                     <input type="password" name="password" placeholder="Ingrese su contraseña"/>
+                </div>
+                <div class="form-group">
+                    <label>Rol</label>
+                    <select name="rolSeleccionado" required>
+                        <option value="" disabled selected>Seleccione su rol</option>
+                        <option value="DOCENTE">Docente</option>
+                        <option value="AUXILIAR">Auxiliar</option>
+                        <option value="SECRETARIA">Secretaría</option>
+                        <option value="DIRECCION">Dirección</option>
+                        <option value="ADMINISTRADOR">Administrador</option>
+                    </select>
                 </div>
                 <div class="form-row">
                     <label><input type="checkbox"/> Recordarme en este equipo</label>

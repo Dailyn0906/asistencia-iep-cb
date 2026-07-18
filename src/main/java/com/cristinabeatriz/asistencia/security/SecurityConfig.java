@@ -16,6 +16,9 @@ public class SecurityConfig {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    @Autowired
+    private RolLoginSuccessHandler rolLoginSuccessHandler;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -34,7 +37,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/login", "/acceso-denegado", "/css/**", "/js/**").permitAll()
                 // RF-01/RF-02/RF-05/RF-10: solo el docente registra asistencia e incidencias
                 .requestMatchers("/asistencia/**").hasRole("DOCENTE")
                 // RF-04/RF-09/CU-05: reportes para auxiliar, secretaría y dirección
@@ -49,15 +52,15 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/dashboard", true)
+                .successHandler(rolLoginSuccessHandler)
                 .permitAll()
             )
             .logout(logout -> logout
                 .logoutSuccessUrl("/login")
                 .permitAll()
             )
-            // El usuario ve una pagina de "acceso denegado" en vez de un error generico
-            .exceptionHandling(ex -> ex.accessDeniedPage("/login?denegado"));
+            // El usuario ve una pagina propia de "acceso denegado" en vez de volver al login
+            .exceptionHandling(ex -> ex.accessDeniedPage("/acceso-denegado"));
         return http.build();
     }
 }

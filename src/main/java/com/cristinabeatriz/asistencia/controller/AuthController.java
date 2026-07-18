@@ -19,6 +19,11 @@ public class AuthController {
         return "login";
     }
 
+    @GetMapping("/acceso-denegado")
+    public String accesoDenegado() {
+        return "acceso-denegado";
+    }
+
     @GetMapping("/dashboard")
     public String dashboard(Model model, Authentication auth) {
         Usuario usuario = usuarioService.findByUsername(auth.getName()).orElse(null);
