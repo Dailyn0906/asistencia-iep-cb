@@ -51,13 +51,14 @@
             </div>
         </div>
         <div class="navbar-links">
-            <a href="/asistencia">Registro de asistencia</a>
-            <a href="/reportes">Reportes</a>
+            <a th:if="${#authorization.expression('hasRole(''DOCENTE'')')}" href="/asistencia">Registro de asistencia</a>
+            <a th:if="${#authorization.expression('hasAnyRole(''AUXILIAR'',''SECRETARIA'',''DIRECCION'',''ADMINISTRADOR'')')}" href="/reportes">Reportes</a>
+            <a th:if="${#authorization.expression('hasRole(''ADMINISTRADOR'')')}" href="/usuarios">Usuarios</a>
         </div>
         <div class="navbar-user">
             <div>
-                <span th:text="${#authentication.name}">Usuario</span>
-                <small>Docente</small>
+                <span th:text="${usuario != null ? usuario.nombreCompleto : #authentication.name}">Usuario</span>
+                <small th:text="${usuario != null ? usuario.rol : ''}">Rol</small>
             </div>
             <form th:action="@{/logout}" method="post">
                 <button class="btn-logout" type="submit">Cerrar sesión</button>
@@ -110,18 +111,18 @@
         </div>
 
         <div class="modules-grid">
-            <div class="module-card">
+            <div class="module-card" th:if="${#authorization.expression('hasRole(''DOCENTE'')')}">
                 <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="#1a2b5e" stroke-width="1.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>                <h3>Registro de Asistencia</h3>
                 <p>Registra la asistencia diaria de tus alumnos</p>
                 <a th:href="@{/asistencia}">Ir al módulo</a>
             </div>
-            <div class="module-card">
+            <div class="module-card" th:if="${#authorization.expression('hasAnyRole(''AUXILIAR'',''SECRETARIA'',''DIRECCION'',''ADMINISTRADOR'')')}">
                 <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="#1a2b5e" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg>
                 <h3>Reportes Excel</h3>
                 <p>Genera y exporta reportes de asistencia</p>
                 <a th:href="@{/reportes}">Ir al módulo</a>
             </div>
-            <div class="module-card">
+            <div class="module-card" th:if="${#authorization.expression('hasRole(''ADMINISTRADOR'')')}">
                 <svg width="45" height="45" viewBox="0 0 24 24" fill="none" stroke="#1a2b5e" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 <h3>Gestión de Usuarios</h3>
                 <p>Administra los usuarios del sistema</p>

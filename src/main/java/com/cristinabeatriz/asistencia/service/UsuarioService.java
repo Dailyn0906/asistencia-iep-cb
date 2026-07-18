@@ -25,6 +25,17 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+    public Optional<Usuario> buscarPorId(Long id) {
+        return usuarioRepository.findById(id);
+    }
+
+    public void cambiarEstado(Long id, boolean activo) {
+        usuarioRepository.findById(id).ifPresent(u -> {
+            u.setEstado(activo);
+            usuarioRepository.save(u);
+        });
+    }
+
     public java.util.List<Usuario> listarTodos() {
         return usuarioRepository.findAll();
     }

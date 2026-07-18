@@ -56,9 +56,26 @@ Esto hace que las consultas sean **parametrizadas por diseño**, mitigando el
 riesgo de inyección SQL (OWASP Top 10 - A03:2021).
 
 ### 2.4 Control de acceso por roles
-Se verificó en `SecurityConfig` que las rutas están restringidas según el rol
-del usuario autenticado (`DOCENTE`, `AUXILIAR`, `SECRETARIA`, `DIRECCION`,
-`ADMINISTRADOR`), cumpliendo RNF-04 y RF-07.
+**Hallazgo:** la configuración original (`SecurityConfig`) solo exigía estar
+**autenticado** (`.anyRequest().authenticated()`), pero **no restringía qué
+rol podía acceder a qué módulo**. Esto significaba que, por ejemplo, un
+usuario con rol `DOCENTE` podía acceder al módulo de gestión de usuarios
+(pensado solo para `ADMINISTRADOR`), contradiciendo directamente RF-07 y
+RNF-04 del propio SRS.
+
+**Corrección aplicada:** se agregaron reglas de autorización por ruta:
+
+| Ruta | Roles permitidos | Requisito que cumple |
+|---|---|---|
+| `/asistencia/**` | DOCENTE | RF-01, RF-02, RF-05, RF-10 |
+| `/reportes/**` | AUXILIAR, SECRETARIA, DIRECCION, ADMINISTRADOR | RF-04, RF-09 |
+| `/usuarios/**` | ADMINISTRADOR | RF-07, RF-08 |
+| `/actuator/**` | ADMINISTRADOR | Monitoreo restringido |
+| resto de rutas | Cualquier usuario autenticado | CU-01 |
+
+Además, el `dashboard.html` ahora oculta los módulos y enlaces que el rol
+del usuario no puede usar (antes mostraba los tres módulos a todos, aunque
+el clic terminara en un error de acceso denegado).
 
 ### 2.5 Expiración de sesión
 Spring Security gestiona la expiración de sesión por inactividad de forma

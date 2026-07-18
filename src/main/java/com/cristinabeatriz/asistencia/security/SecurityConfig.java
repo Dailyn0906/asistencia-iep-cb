@@ -35,6 +35,15 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/css/**", "/js/**").permitAll()
+                // RF-01/RF-02/RF-05/RF-10: solo el docente registra asistencia e incidencias
+                .requestMatchers("/asistencia/**").hasRole("DOCENTE")
+                // RF-04/RF-09/CU-05: reportes para auxiliar, secretaría y dirección
+                .requestMatchers("/reportes/**").hasAnyRole("AUXILIAR", "SECRETARIA", "DIRECCION", "ADMINISTRADOR")
+                // RF-07/RF-08/CU-08: gestión de usuarios solo para el administrador
+                .requestMatchers("/usuarios/**").hasRole("ADMINISTRADOR")
+                // Monitoreo del sistema: solo administrador
+                .requestMatchers("/actuator/**").hasRole("ADMINISTRADOR")
+                // Dashboard accesible para cualquier usuario autenticado (CU-01)
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -46,7 +55,9 @@ public class SecurityConfig {
             .logout(logout -> logout
                 .logoutSuccessUrl("/login")
                 .permitAll()
-            );
+            )
+            // El usuario ve una pagina de "acceso denegado" en vez de un error generico
+            .exceptionHandling(ex -> ex.accessDeniedPage("/login?denegado"));
         return http.build();
     }
 }
